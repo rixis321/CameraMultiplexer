@@ -10,7 +10,7 @@ video_capture_dict = {}
 frame_buffers = {}
 
 
-# Funkcja generująca pstrumienie video z obrazami z różnych kamer
+# Funkcja generująca strumienie video z obrazami z różnych kamer
 # Dodac zapisywanie obrazu w formie video + kompresja Huffmana
 def generate():
     global frame_buffers
@@ -36,7 +36,8 @@ def generate():
                     combined_frame = cv2.hconcat([combined_frame, frame])
         
         if combined_frame is not None:
-            _, img_encoded = cv2.imencode('.jpg', combined_frame, [cv2.IMWRITE_JPEG_QUALITY, 50])  # Ustawienie jakości na 50 (domyślnie 95)
+            #obnizenie jakosci obrazu
+            _, img_encoded = cv2.imencode('.jpg', combined_frame, [cv2.IMWRITE_JPEG_QUALITY, 50])  
             frame_bytes = img_encoded.tobytes()
             yield (b'--frame\r\n'
                    b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
@@ -83,7 +84,7 @@ def start_server(cameras):
         video_capture_dict[cam["camera_id"]] = cv2.VideoCapture(cam["camera_id"])
         frame_buffers[cam["camera_id"]] = None
     app.run(host='0.0.0.0', threaded=True, debug=False)
-
+    
 if __name__ == "__main__":
     
     #konfiguracja kamer tutaj
